@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+    	{{node.name}}
+    </ion-title>
+    <ion-buttons end>
+    	<button ion-button clear icon-only (click)="openEditModal()" item-right>
+      <ion-icon name="md-create" ></ion-icon>   
+    </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <div *ngFor="let message of messages">
+    <div [ngClass]="message.styleClass">
+      <div *ngIf="message.name" class="message-name">{{message.name}}</div>
+      <div class="message-bubble">{{message.content}}</div>
+    </div>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <ion-item>
+    <ion-input type="text" [(ngModel)]="msgInput" (keyup.enter)="send(msgInput)" placeholder="Enter message"></ion-input>
+    <button ion-button clear icon-only (click)="send(msgInput)" item-right>
+    	<ion-icon name="md-send" ></ion-icon>  	
+    </button>
+  </ion-item>
+</ion-footer>
