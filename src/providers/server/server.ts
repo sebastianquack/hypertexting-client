@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import * as io from 'socket.io-client';
 
 //var baseUrl = 'http://localhost:3000';
-var baseUrl = 'https://secure-island-91581.herokuapp.com';
+var baseUrl = 'https://htserver.herokuapp.com';
 
 /*
   Generated class for the ServerProvider provider.
