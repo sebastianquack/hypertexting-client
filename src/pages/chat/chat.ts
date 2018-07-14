@@ -28,8 +28,15 @@ export class ChatPage {
     this.node = this.navParams.get('node');
     
     console.log("asking server to send to room " + this.node.id);
-    server.joinRoom(this.node.id); // this sometimes times out or doesn't work after server sleeps? 
+    server.joinRoom(this.node.id); 
+
     server.listenForMessages((data)=>{this.receive(data)});
+  }
+
+  ionViewWillEnter() {
+    if(!this.server.socketConnected()) {
+      this.systemMsg("Socket connection lost, reconnecting...");
+    }  
   }
 
   openEditModal() {

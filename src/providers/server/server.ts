@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 
 import * as io from 'socket.io-client';
 
-//var baseUrl = 'http://localhost:3000';
+//var baseUrl = 'http://192.168.1.2:3000';
 var baseUrl = 'https://htserver.herokuapp.com';
 
 /*
@@ -18,9 +18,19 @@ export class ServerProvider {
   socket:any;
   constructor(public http: HttpClient) {
     this.socket = io(baseUrl);
+    this.socket.on('disconnect', function(){
+      console.log("socket disconnect");
+    });
+    this.socket.on('connect', function(){
+      console.log("socket connect");
+    });
   }
 
   // socket.io api
+
+  socketConnected() {
+    return this.socket.connected;
+  }
 
   joinRoom(room:string) {
     this.socket.emit('joinRoom', room); // ask server to put us in a room
