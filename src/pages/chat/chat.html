@@ -15,7 +15,11 @@
   <div *ngFor="let message of messages">
     <div [ngClass]="message.styleClass">
       <div *ngIf="message.name" class="message-name">{{message.name}}</div>
-      <div class="message-bubble">{{message.content}}</div>
+      
+      <div class="message-bubble">
+        <span *ngIf="message.typing" class="typing"><span>•</span><span>•</span><span>•</span></span>
+        <span *ngIf="!message.typing">{{message.content}}</span>
+      </div>
     </div>
   </div>
 </ion-content>

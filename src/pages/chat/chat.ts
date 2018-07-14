@@ -28,8 +28,7 @@ export class ChatPage {
     this.node = this.navParams.get('node');
     
     console.log("asking server to send to room " + this.node.id);
-    server.joinRoom(this.node.id);
-
+    server.joinRoom(this.node.id); // this sometimes times out or doesn't work after server sleeps? 
     server.listenForMessages((data)=>{this.receive(data)});
   }
 
@@ -44,7 +43,12 @@ export class ChatPage {
   }
 
   chatMsg(msg, side) {
-    let item = {"styleClass": "chat-message " + side, "content": msg.message, "name": side == "left" ? msg.name : null};
+    let item = {
+      "styleClass": "chat-message " + side, 
+      "content": msg.message, 
+      "name": side == "left" ? msg.name : null,
+      "typing": side == "left" ? true : false
+    };
     this.displayMsg(item);
   }
 
@@ -55,6 +59,12 @@ export class ChatPage {
 
   displayMsg(item) {
     this.messages.push(item);
+    if(item.typing) {
+      let index = this.messages.length - 1;
+      setTimeout(()=>{
+        this.messages[index].typing = false;  
+      }, 100 * item.content.length);
+    }
     if(this.content._scroll) {
       this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight - 48, 500);  
     } 
@@ -71,6 +81,9 @@ export class ChatPage {
   receive(msg) {
 		console.log("received message");
     console.log(msg);
+    if(!msg) {
+      return;
+    }
     if(msg.system) {
       if(msg.message) {
         this.systemMsg(msg.message);  
