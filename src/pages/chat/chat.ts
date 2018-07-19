@@ -4,6 +4,8 @@ import { NavController, Content, NavParams, ModalController } from 'ionic-angula
 import { EditPage } from '../edit/edit';
 import { ServerProvider } from '../../providers/server/server';
 
+import * as $ from "jquery";
+
 @Component({
   selector: 'page-chat',
   templateUrl: 'chat.html'
@@ -14,6 +16,7 @@ export class ChatPage {
   messages:any[];
   socket:any;
   node:any;
+  autoTyping:boolean;
 
   @ViewChild(Content) content: Content;
 
@@ -26,17 +29,21 @@ export class ChatPage {
     this.msgInput = '';
     this.messages = [];
     this.node = this.navParams.get('node');
-    
-    console.log("asking server to send to room " + this.node.id);
-    server.joinRoom(this.node.id); 
+    this.autoTyping = false;
+  }
 
-    server.listenForMessages((data)=>{this.receive(data)});
+  ngAfterViewInit(){
+      $(document).ready(function(){
+        console.log('JQuery is working!!');
+      });
   }
 
   ionViewWillEnter() {
-    //if(!this.server.socketConnected()) {
     this.systemMsg("connecting...");
-    //}  
+
+    console.log("asking server to send to room " + this.node.id);
+    this.server.joinRoom(this.node.id); 
+    this.server.listenForMessages((data)=>{this.receive(data)});
   }
 
   openEditModal() {
@@ -64,12 +71,40 @@ export class ChatPage {
     this.displayMsg(item);
   }
 
+  // todo: find a way to do this with angular
+  updateMarkEvents() {
+    setTimeout(()=> {
+      console.log("setting up events on marks");
+      $('mark').off("click");
+      $('mark').on("click", (event)=> {
+        this.autoType(event.target.innerHTML);
+      });    
+    }, 500);
+  }
+
+  // animate typing into input field when user clicks shortcut in log
+  autoType(text) {
+    if (this.autoTyping) return;
+    else this.autoTyping = true;
+    var delay = 90;
+    var type = (text, delay) => {
+      let character = text.substr(0,1);
+      let remaining = text.substr(1);
+      this.msgInput += character;
+      if (remaining != "") setTimeout(()=>{type(remaining, delay)}, delay);
+    }
+    type(text, delay);
+    setTimeout(()=> { this.send(this.msgInput); this.autoTyping = false; }, delay * (text.length+5));
+  }
+
+
   displayMsg(item) {
     this.messages.push(item);
     if(item.typing) {
       let index = this.messages.length - 1;
       setTimeout(()=>{
-        this.messages[index].typing = false;  
+        this.messages[index].typing = false;
+        this.updateMarkEvents();  
       }, 100 * item.content.length);
     }
     if(this.content._scroll) {
@@ -101,7 +136,6 @@ export class ChatPage {
     } else {
       this.chatMsg(msg, "left");  
     }
-    
 	}
 
   ionViewWillLeave() {

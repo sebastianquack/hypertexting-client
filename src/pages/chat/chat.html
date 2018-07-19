@@ -18,7 +18,7 @@
       
       <div class="message-bubble">
         <span *ngIf="message.typing" class="typing"><span>•</span><span>•</span><span>•</span></span>
-        <span *ngIf="!message.typing">{{message.content}}</span>
+        <span *ngIf="!message.typing" [innerHTML]=message.content></span>
       </div>
     </div>
   </div>
