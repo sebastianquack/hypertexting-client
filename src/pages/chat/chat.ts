@@ -34,9 +34,9 @@ export class ChatPage {
   }
 
   ionViewWillEnter() {
-    if(!this.server.socketConnected()) {
-      this.systemMsg("Socket connection lost, reconnecting...");
-    }  
+    //if(!this.server.socketConnected()) {
+    this.systemMsg("connecting...");
+    //}  
   }
 
   openEditModal() {
