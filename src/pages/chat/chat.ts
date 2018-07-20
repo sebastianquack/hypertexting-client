@@ -1,10 +1,12 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController, Content, NavParams, ModalController } from 'ionic-angular';
+import { NavController, Content, NavParams, ModalController, ActionSheetController, LoadingController } from 'ionic-angular';
 
 import { EditPage } from '../edit/edit';
 import { ServerProvider } from '../../providers/server/server';
 
 import * as $ from "jquery";
+
+import { Geolocation } from '@ionic-native/geolocation';
 
 @Component({
   selector: 'page-chat',
@@ -24,6 +26,9 @@ export class ChatPage {
     public navCtrl: NavController, 
     private navParams: NavParams,
     public modalCtrl: ModalController,
+    public actionSheetCtrl: ActionSheetController,
+    private geolocation: Geolocation,
+    public loadingCtrl: LoadingController,
     private server: ServerProvider) {
   	
     this.msgInput = '';
@@ -44,6 +49,56 @@ export class ChatPage {
     console.log("asking server to send to room " + this.node.id);
     this.server.joinRoom(this.node.id); 
     this.server.listenForMessages((data)=>{this.receive(data)});
+  }
+
+  openAttachOptions() {
+    console.log("attach clicked");
+    const actionSheet = this.actionSheetCtrl.create({
+      title: 'Send Attachment',
+      buttons: [
+        {
+          text: 'Location',
+          icon: 'md-locate',
+          handler: () => {
+            console.log('Location clicked');
+            const loader = this.loadingCtrl.create({
+              content: "Getting Location..."
+            });
+            loader.present();
+            this.geolocation.getCurrentPosition().then((resp) => {
+              this.send(resp.coords.latitude + " " + resp.coords.longitude); //todo: define attachment api
+              loader.dismiss();
+            }).catch((error) => {
+              console.log('Error getting location', error);
+              loader.dismiss();
+            });
+          }
+        },
+        {
+          text: 'Camera',
+          icon: 'camera',
+          handler: () => {
+            console.log('Camera clicked');
+          }
+        },
+        {
+          text: 'Gallery',
+          icon: 'image',
+          handler: () => {
+            console.log('Gallery clicked');
+          }
+        },
+        {
+          text: 'Cancel',
+          icon: 'close',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
+        }
+      ]
+    });
+    actionSheet.present();
   }
 
   openEditModal() {

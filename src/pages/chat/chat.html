@@ -27,8 +27,8 @@
 <ion-footer>
   <ion-item>
     <ion-input type="text" [(ngModel)]="msgInput" (keyup.enter)="send(msgInput)" placeholder="Enter message"></ion-input>
-    <button ion-button clear icon-only (mousedown)="send(msgInput); $event.preventDefault()" item-right>
-    	<ion-icon name="md-send" ></ion-icon>  	
+    <button ion-button clear icon-only (click)="openAttachOptions()" item-right>
+    	<ion-icon name="attach" ></ion-icon>  	
     </button>
   </ion-item>
 </ion-footer>

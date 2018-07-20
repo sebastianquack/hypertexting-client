@@ -4,6 +4,8 @@ import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 
+import {Geolocation} from '@ionic-native/geolocation';
+
 import { CodemirrorModule } from '@nomadreservations/ngx-codemirror';
 import { HttpClientModule } from '@angular/common/http';  // replaces previous Http service
 
@@ -35,6 +37,7 @@ import { EditPage } from '../pages/edit/edit';
     EditPage
   ],
   providers: [
+    Geolocation,
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
