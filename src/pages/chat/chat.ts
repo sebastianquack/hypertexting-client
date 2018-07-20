@@ -65,7 +65,8 @@ export class ChatPage {
               content: "Getting Location..."
             });
             loader.present();
-            this.geolocation.getCurrentPosition().then((resp) => {
+            this.geolocation.getCurrentPosition({enableHighAccuracy: true, maximumAge: 0}).then((resp) => {
+              console.log(resp);
               this.send(resp.coords.latitude + " " + resp.coords.longitude); //todo: define attachment api
               loader.dismiss();
             }).catch((error) => {
