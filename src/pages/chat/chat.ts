@@ -67,7 +67,18 @@ export class ChatPage {
             loader.present();
             this.geolocation.getCurrentPosition({enableHighAccuracy: true, maximumAge: 0}).then((resp) => {
               console.log(resp);
-              this.send(resp.coords.latitude + " " + resp.coords.longitude); //todo: define attachment api
+              
+              let mapUrl = "https://www.google.com/maps/@"+resp.coords.latitude+","+resp.coords.longitude+",18z";
+
+              let mapImgUrl = 
+              "https://maps.googleapis.com/maps/api/staticmap?center="
+              +resp.coords.latitude+","+resp.coords.longitude
+              +"&zoom=18&size=150x150"
+              +"&markers=size:small%7Ccolor:blue%7C"+resp.coords.latitude+","+resp.coords.longitude
+              +"&key=AIzaSyDQLtgFdKIsghQkoiYN-ojaa2wX7K4d630";
+
+              this.send("<a target='_blank' href='"+mapUrl+"'><img width='150', height='150' src='"+mapImgUrl+"' alt='map'></a>");
+                
               loader.dismiss();
             }).catch((error) => {
               console.log('Error getting location', error);
